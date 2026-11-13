@@ -64,7 +64,7 @@ async function loadSections(){
       if(!section.visible) continue; // secciones ocultas: ni se cargan
       const response = await fetch(section.file);
       if(!response.ok) throw new Error('No se pudo cargar ' + section.file);
-      const html = await response.text();
+      const html = deferMedia(await response.text());
       container.insertAdjacentHTML('beforeend', html);
     }
   } catch(err){
@@ -76,6 +76,15 @@ async function loadSections(){
       '</section>';
     console.error(err);
   }
+}
+
+/* deferMedia(html): antes de insertar una sección, cambia src= y poster=
+   de sus <img>, <video> e <iframe> por data-src= / data-poster=. Así el
+   navegador NO descarga nada al abrir la página: cada archivo se pide
+   recién cuando hace falta (ver "CARGA DIFERIDA" dentro de initApp). */
+function deferMedia(html){
+  return html.replace(/<(?:img|video|iframe)\b[^>]*>/g,
+    tag => tag.replace(/\s(src|poster)=/g, ' data-$1='));
 }
 
 /* Arranca todo: primero carga las secciones, y cuando termina, inicializa
@@ -146,6 +155,37 @@ function initApp(){
   const breadcrumb    = document.getElementById('breadcrumbScene');
   const root           = document.documentElement;
   const reduceMotion  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Mouse real (computador). En celular/tablet es false: ahí se apagan la
+  // estela de luz y el revelado del título, que dependen del cursor.
+  const canHover      = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---------- CARGA DIFERIDA ----------
+     hydrate(container): pone el src real (guardado en data-src por
+     deferMedia) a las imágenes, portadas e iframes de ese contenedor.
+     - Al entrar a una sección: solo el título (imagen del banner) y lo que
+       esté fuera de las fichas.
+     - Al abrir una ficha: sus imágenes, portadas y modelos de Sketchfab.
+     - Los clips de galería se cargan al verse en pantalla (bloque 7) y los
+       videos principales recién al darle play (bloque 8). */
+  function hydrate(container, skipDetails){
+    if(!container) return;
+    const outside = el=> !skipDetails || !el.closest('.project-detail');
+    container.querySelectorAll('img[data-src], iframe[data-src]').forEach(el=>{
+      if(!outside(el)) return;
+      el.src = el.dataset.src; el.removeAttribute('data-src');
+    });
+    container.querySelectorAll('video[data-poster]').forEach(v=>{
+      if(!outside(v)) return;
+      v.poster = v.dataset.poster; v.removeAttribute('data-poster');
+    });
+  }
+  function hydrateScene(scene){
+    if(!scene || scene.dataset.hydrated) return;
+    scene.dataset.hydrated = '1';
+    const banner = scene.querySelector('.section-banner[data-img]');
+    if(banner && canHover) banner.style.setProperty('--banner-img', 'url("' + banner.dataset.img + '")');
+    hydrate(scene, true);
+  }
 
   // Pinta el puntito de color de cada botón del nav según su data-color
   navItems.forEach(item=>{
@@ -187,6 +227,7 @@ function initApp(){
     navItems.forEach(n=> n.classList.toggle('active', n.dataset.target === target));
 
     const activeScene = document.getElementById(target);
+    hydrateScene(activeScene);
     if(activeScene){ breadcrumb.textContent = activeScene.dataset.name; activeScene.scrollTop = 0; }
 
     if(history.replaceState) history.replaceState(null, '', '#'+target);
@@ -202,6 +243,7 @@ function initApp(){
     scene.querySelectorAll('.project-detail').forEach(d=> d.hidden = (d.id !== projectId));
     scene.scrollTop = 0;
     const detail = document.getElementById(projectId);
+    hydrate(detail);
     const titleEl = detail ? detail.querySelector('h3') : null;
     if(titleEl) breadcrumb.textContent = scene.dataset.name + ' / ' + titleEl.textContent.toUpperCase();
   }
@@ -233,6 +275,7 @@ function initApp(){
   // Si la URL trae un #hash al cargar, abre esa escena directamente
   const hash = location.hash.replace('#','');
   if(hash && document.getElementById(hash)) goTo(hash);
+  hydrateScene(document.querySelector('.scene.active'));
 
   /* ---------- 4. TEXTO QUE ROTA EN 3D (letra por letra) ----------
      splitLetters(el): reemplaza el texto de un elemento por un
@@ -268,7 +311,9 @@ function initApp(){
      propósito (alpha bajo + blur por CSS en #trailCanvas) para que
      nunca tape el contenido. Se desactiva si el usuario prefiere menos
      movimiento. */
-  if(!reduceMotion){
+  // Solo con mouse real: en celular no hay cursor y el dibujo continuo
+  // gastaría batería. Además el bucle se detiene cuando no hay estela.
+  if(!reduceMotion && canHover){
     const canvas = document.getElementById('trailCanvas');
     const ctx = canvas.getContext('2d');
     let points = [];
@@ -288,9 +333,11 @@ function initApp(){
       return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
     }
 
+    let running = false;
     window.addEventListener('pointermove', (e)=>{
       points.push({ x:e.clientX, y:e.clientY, born:performance.now() });
       if(points.length > 60) points.shift();
+      if(!running){ running = true; requestAnimationFrame(drawTrail); }
     });
 
     function drawTrail(now){
@@ -313,9 +360,9 @@ function initApp(){
         ctx.fill();
       });
 
-      requestAnimationFrame(drawTrail);
+      if(points.length) requestAnimationFrame(drawTrail);
+      else running = false; // quieto: no se redibuja hasta que el mouse se mueva
     }
-    requestAnimationFrame(drawTrail);
   }
 
   /* ---------- 6. BANNER INTERACTIVO DE TÍTULO ----------
@@ -330,11 +377,10 @@ function initApp(){
      b) Seguimos el mouse sobre el banner y actualizamos --mx / --my (en
         px, relativos al propio banner) para mover ese círculo — así la
         imagen/color "aparece" donde está el cursor, como una linterna. */
+  // (La imagen --banner-img la pone hydrateScene al entrar a la sección,
+  //  y solo en computador: en celular el revelado está apagado por CSS.)
   document.querySelectorAll('.section-banner').forEach(banner=>{
-    const img = banner.dataset.img;
-    if(img) banner.style.setProperty('--banner-img', 'url("' + img + '")');
-
-    if(reduceMotion) return; // sin efecto linterna: la imagen queda fija (ver CSS)
+    if(reduceMotion || !canHover) return; // sin efecto linterna: la imagen queda fija (ver CSS)
 
     banner.addEventListener('pointermove', (e)=>{
       const rect = banner.getBoundingClientRect();
@@ -369,6 +415,7 @@ function initApp(){
         if(v.closest('.lightbox')) return; // en el visor lo controla el usuario
         if(entry.isIntersecting){
           visibleClips.add(v);
+          loadClip(v);
           if(!reduceMotion) v.play().catch(()=>{});
         } else {
           visibleClips.delete(v);
@@ -376,6 +423,13 @@ function initApp(){
         }
       });
     }, { threshold: 0.25 }) : null;
+
+    // El clip se descarga recién la primera vez que aparece en pantalla
+    function loadClip(v){
+      if(!v.dataset.src) return;
+      v.src = v.dataset.src; v.removeAttribute('data-src');
+      v.preload = 'auto';
+    }
 
     function markMissing(slot, media){
       slot.classList.remove('is-ready');
@@ -387,23 +441,20 @@ function initApp(){
 
     clipSlots.forEach(slot=>{
       // Foto en vez de clip: solo estado listo / faltante (sin play)
+      // Como los archivos se cargan tarde, el cuadro se muestra "listo"
+      // desde el principio y solo vuelve al punteado si el archivo falla.
       const img = slot.querySelector('img');
       if(img){
-        if(img.complete && img.naturalWidth) slot.classList.add('is-ready');
-        else if(img.complete) { markMissing(slot, img); return; }
-        img.addEventListener('load', ()=> slot.classList.add('is-ready'));
+        slot.classList.add('is-ready');
         img.addEventListener('error', ()=> markMissing(slot, img));
         return;
       }
       const video = slot.querySelector('video');
       if(!video) return;
       video.muted = true; // los navegadores solo permiten play automático en silencio
-      // El video empezó a cargar antes de que corra este código: revisar su estado actual
-      if(video.error){ markMissing(slot, video); return; }
-      if(video.readyState >= 1) slot.classList.add('is-ready');
-      video.addEventListener('loadedmetadata', ()=> slot.classList.add('is-ready'));
+      slot.classList.add('is-ready');
       video.addEventListener('error', ()=> markMissing(slot, video));
-      if(io) io.observe(video);
+      if(io) io.observe(video); else loadClip(video);
     });
 
     // Visor: se crea una sola vez y se reutiliza para todos los clips
@@ -435,6 +486,7 @@ function initApp(){
         return;
       }
       const video = media;
+      loadClip(video);
       video.controls = true;
       const cap = slot.closest('.clip') ? slot.closest('.clip').querySelector('.clip-caption') : null;
       caption.textContent = cap ? cap.textContent : '';
@@ -469,15 +521,13 @@ function initApp(){
 
   /* ---------- 8. VIDEO PRINCIPAL DE FICHA ----------
      Para cada .main-video (plantilla en sections/experiencias-interactivas.html):
-     a) Lee la duración del video y la escribe en la etiqueta del botón
-        ("▶ REPRODUCIR · 0:56").
-     b) Ajusta la proporción del marco a la del video (--mv-ratio/--mv-ar,
-        ver style.css bloque 13), así no quedan franjas negras de más.
-     c) Si la portada (poster) no existe, muestra un fotograma del video
-        para que no se vea un cuadro negro: segundo 1 por defecto, o el
-        que diga data-frame="..." en el <video>.
-     d) Al hacer clic en la capa, la quita, activa los controles y
-        reproduce desde el principio. Si se pausa, la capa no vuelve. */
+     a) Escribe la duración (data-duration del <video>) en la etiqueta del
+        botón ("▶ REPRODUCIR · 0:57"), sin descargar nada del video.
+     b) Al cargar, ajusta la proporción del marco a la del video
+        (--mv-ratio/--mv-ar, ver style.css bloque 13).
+     c) Al hacer clic en la capa: recién ahí pone el src y descarga el
+        video, quita la capa, activa los controles y reproduce. Si se
+        pausa, la capa no vuelve. Mientras tanto se ve la portada (poster). */
   document.querySelectorAll('.main-video').forEach(box=>{
     const video = box.querySelector('video');
     const overlay = box.querySelector('.mv-overlay');
@@ -485,37 +535,24 @@ function initApp(){
     if(!video || !overlay) return;
     let started = false;
 
-    const fmt = s=>{ s = Math.round(s); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); };
-    function onMeta(){
-      if(timeEl && isFinite(video.duration)) timeEl.textContent = fmt(video.duration);
+    // Duración: viene escrita en data-duration (así no hay que descargar
+    // nada del video para mostrarla). La proporción se ajusta al cargar.
+    if(timeEl && video.dataset.duration) timeEl.textContent = video.dataset.duration;
+    video.addEventListener('loadedmetadata', ()=>{
       if(video.videoWidth && video.videoHeight){
         box.style.setProperty('--mv-ratio', video.videoWidth + ' / ' + video.videoHeight);
         box.style.setProperty('--mv-ar', video.videoWidth / video.videoHeight);
       }
-    }
-    if(video.readyState >= 1) onMeta();
-    video.addEventListener('loadedmetadata', onMeta);
-
-    function showFrame(){
-      const sec = parseFloat(video.dataset.frame || '1');
-      const seek = ()=>{ if(!started) video.currentTime = Math.min(sec, Math.max(0, (video.duration || sec) - 0.1)); };
-      if(video.readyState >= 1) seek(); else video.addEventListener('loadedmetadata', seek, { once:true });
-    }
-    const posterUrl = video.getAttribute('poster');
-    if(posterUrl){
-      const probe = new Image();
-      probe.onerror = ()=>{ video.removeAttribute('poster'); showFrame(); };
-      probe.src = posterUrl;
-    } else {
-      showFrame();
-    }
+    });
 
     function start(){
       if(started) return;
       started = true;
       box.classList.add('is-playing');
       video.controls = true;
-      video.currentTime = 0;
+      // Recién acá se descarga el video
+      if(video.dataset.src){ video.src = video.dataset.src; video.removeAttribute('data-src'); }
+      video.preload = 'auto';
       video.play().catch(()=>{});
       video.focus();
     }

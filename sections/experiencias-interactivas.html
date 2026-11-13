@@ -27,7 +27,7 @@
              <span class="clip-ph">[nombre-del-video.mp4]</span>
              <video src="images/<proyecto>/<archivo>.mp4"
                     poster="images/<proyecto>/<portada>.webp"   (opcional)
-                    muted loop playsinline preload="metadata"></video>
+                    muted loop playsinline preload="none"></video>
            </button>
            <figcaption class="clip-caption">Pie corto (opcional: borrá esta línea)</figcaption>
          </figure>
@@ -39,9 +39,11 @@
        Portada + botón "▶ Reproducir · duración" encima, marco con
        corchetes de esquina y alto máximo de 70vh. Copiá:
          <div class="embed-slot main-video">
-           <video src="images/videos/<archivo>.mp4"
+           <video src="images/videos/<archivo>.mp4" data-duration="m:ss"
                   poster="images/videos/<portada>.webp"
-                  playsinline preload="metadata" aria-label="Video de <proyecto>"></video>
+                  playsinline preload="none" aria-label="Video de <proyecto>"></video>
+         (data-duration: la duración que muestra el botón, escrita a mano,
+          para no tener que descargar el video antes de darle play.)
            <button class="mv-overlay" type="button" aria-label="Reproducir video de <proyecto>">
              <i class="mv-icon" aria-hidden="true"></i>
              <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
@@ -114,9 +116,9 @@
 
     <!-- Video principal (componente reutilizable: ver plantilla arriba) -->
     <div class="embed-slot main-video">
-      <video src="images/videos/felsong_portafolio.mp4"
+      <video src="images/videos/felsong_portafolio.mp4" data-duration="0:57"
              poster="images/videos/feelsong-poster.webp"
-             playsinline preload="metadata" aria-label="Video de FeelSong"></video>
+             playsinline preload="none" aria-label="Video de FeelSong"></video>
       <button class="mv-overlay" type="button" aria-label="Reproducir video de FeelSong">
         <i class="mv-icon" aria-hidden="true"></i>
         <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
@@ -140,25 +142,25 @@
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 1 de FeelSong">
           <span class="clip-ph">[fs1.mp4]</span>
-          <video src="images/feelsong/fs1.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/feelsong/fs1.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 2 de FeelSong">
           <span class="clip-ph">[fs2.mp4]</span>
-          <video src="images/feelsong/fs2.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/feelsong/fs2.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 3 de FeelSong">
           <span class="clip-ph">[fs3.mp4]</span>
-          <video src="images/feelsong/fs3.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/feelsong/fs3.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 4 de FeelSong">
           <span class="clip-ph">[fs4.mp4]</span>
-          <video src="images/feelsong/fs4.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/feelsong/fs4.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
     </div>
@@ -190,9 +192,9 @@
 
     <!-- Video principal (componente reutilizable: ver plantilla arriba) -->
     <div class="embed-slot main-video">
-      <video src="images/campamento/demo_de_campamento.mp4"
+      <video src="images/campamento/demo_de_campamento.mp4" data-duration="1:17"
              poster="images/campamento/campamento-poster.webp"
-             playsinline preload="metadata" aria-label="Video de De Campamento"></video>
+             playsinline preload="none" aria-label="Video de De Campamento"></video>
       <button class="mv-overlay" type="button" aria-label="Reproducir video de De Campamento">
         <i class="mv-icon" aria-hidden="true"></i>
         <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
@@ -216,19 +218,19 @@
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 1 de De Campamento">
           <span class="clip-ph">[dc1.mp4]</span>
-          <video src="images/campamento/dc1.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/campamento/dc1.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 2 de De Campamento">
           <span class="clip-ph">[dc2.mp4]</span>
-          <video src="images/campamento/dc2.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/campamento/dc2.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
       <figure class="clip">
         <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 3 de De Campamento">
           <span class="clip-ph">[de7.mp4]</span>
-          <video src="images/campamento/de7.mp4" muted loop playsinline preload="metadata"></video>
+          <video src="images/campamento/de7.mp4" muted loop playsinline preload="none"></video>
         </button>
       </figure>
     </div>
