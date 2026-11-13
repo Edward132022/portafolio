@@ -1,0 +1,65 @@
+<!-- =========================================================================
+     SECCIÓN: HARDWARE (04) — color de canal: --amber.
+     OCULTA por ahora: para mostrarla, poné visible:true en su entrada de
+     SECTION_FILES (script.js).
+     Patrón lista → detalle. La estructura de cada ficha está explicada en
+     sections/experiencias-interactivas.html.
+========================================================================= -->
+<section class="scene" id="hardware" data-name="04_HARDWARE">
+  <div class="scene-head">
+    <div class="eyebrow">Escena 04 — Hardware</div>
+    <div class="section-banner" data-img="images/hardware.webp">
+      <span class="banner-outline" aria-hidden="true">Hardware</span>
+      <span class="banner-fill" aria-hidden="true">Hardware</span>
+      <span class="banner-image" aria-hidden="true">Hardware</span>
+    </div>
+    <p>Abrí un proyecto para ver cómo funciona y el proceso detrás de él.</p>
+  </div>
+
+  <!-- ---- VISTA 1: lista de proyectos ---- -->
+  <div class="project-index">
+    <div class="work-list">
+      <button class="work-item" data-scene="hardware" data-target="hw-guante">
+        <span class="wi-tag">ESP32 / MIDI</span><span class="wi-title">Guante musical</span><span class="wi-arrow">Ver →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---- VISTA 2: fichas de proyecto ---- -->
+
+  <!-- Guante musical -->
+  <div class="project-detail" id="hw-guante" hidden>
+    <button class="detail-back" data-scene="hardware">← Volver a Hardware</button>
+    <div class="detail-head"><h3>Guante musical</h3><span class="project-tag">2026</span></div>
+    <div class="chips">
+      <span class="chip">ESP32</span>
+      <span class="chip">Bluetooth MIDI</span>
+      <span class="chip">Sensor de fuerza</span>
+      <span class="chip">[Otros sensores / lenguaje]</span>
+    </div>
+    <p class="detail-idea">Guante con ESP32 que toca notas por Bluetooth MIDI usando los gestos de la mano.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>[Tu rol en el proyecto]. Proyecto en equipo para la materia Física del Computador. Equipo: [nombres del equipo].</p>
+    </div>
+
+    <div class="embed-slot">[Video o GIF del guante musical]<span>Pegá acá un iframe, &lt;video&gt; o &lt;img&gt; (GIF)</span></div>
+
+    <div class="detail-block">
+      <div class="eyebrow">Cómo funciona</div>
+      <ol class="how-list">
+        <li>Los gestos de la mano cambian las notas y las alteraciones [qué sensores los detectan].</li>
+        <li>Un sensor de fuerza controla la intensidad de cada nota.</li>
+        <li>Al sacudir la mano se activa el vibrato.</li>
+        <li>El ESP32 envía las notas por Bluetooth MIDI a [dispositivo o software que las reproduce].</li>
+      </ol>
+    </div>
+
+    <div class="process-row">
+      <div class="process-slot">[Imagen de proceso 01]</div>
+      <div class="process-slot">[Imagen de proceso 02]</div>
+      <div class="process-slot">[Imagen de proceso 03]</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,395 @@
+/* =========================================================================
+   ARCHIVO: style.css
+   Todo el diseño visual del portafolio. Organizado en bloques:
+   1. Tokens (colores, tipografías)
+   2. Fondo / HUD decorativo
+   3. Navegación
+   4. Escenas (layout general de cada "página")
+   5. Banner interactivo de títulos de sección
+   6. Hero (Inicio)
+   7. Sobre mí
+   8. Secciones de proyectos (lista + detalle)
+   9. Escenas "en construcción"
+   10. Contacto
+   11. Fichas de proyecto (bloques de la plantilla nueva)
+   12. Galería de clips + visor ampliado
+   13. Video principal de ficha (portada, botón de play, marco)
+========================================================================= */
+
+/* ---------- 1. TOKENS ---------- */
+:root{
+  --bg:#0a0a10;
+  --panel:#121220;
+  --panel-2:#181828;
+  --line: rgba(242,240,250,0.09);
+  --text:#f3f1fb;
+  --muted:#918da8;
+
+  --red:#ff4655;     /* 3D y visual */
+  --magenta:#ff4ce0; /* Sin canal propio (Ilustración se unió a 3D y visual); sigue en .hero-spectrum */
+  --blue:#4c8cff;    /* Experiencias interactivas */
+  --green:#42ffb0;   /* Apps y web */
+  --amber:#ffc23d;   /* Hardware */
+  --neutral:#b300d2; /* Inicio / Sobre mí / Contacto */
+
+  --accent: var(--neutral); /* Cambia por JS según la escena activa */
+
+  /* Tipografías: Anton (display, brutalista/poster) para títulos grandes,
+     Archivo (grotesk crudo) para texto de lectura, JetBrains Mono para
+     todo lo "técnico" (etiquetas, HUD, chips). */
+  --display: 'Anton', sans-serif;
+  --body: 'Archivo', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{ background:var(--bg); color:var(--text); font-family:var(--body); overflow:hidden; -webkit-font-smoothing:antialiased; }
+::selection{ background:var(--accent); color:#0a0a10; }
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit; cursor:pointer; background:none; border:none; color:inherit;}
+:focus-visible{ outline:2px solid var(--accent); outline-offset:4px; }
+
+/* ---------- 2. FONDO / HUD ---------- */
+.grid-bg{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 64px);
+  mask-image: radial-gradient(circle at 50% 40%, black 0%, transparent 75%);
+  opacity:.55;
+}
+
+/* Canvas de la estela de luz (suavizada: blur + opacidad bajos para que
+   nunca compita con el contenido). Ver script.js sección 5. */
+#trailCanvas{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  filter: blur(16px);
+  opacity:.55;
+}
+
+.app{ position:relative; z-index:1; height:100vh; width:100vw; }
+
+.hud-corner{ position:fixed; width:22px; height:22px; z-index:40; border-color:var(--accent); opacity:.5; transition: border-color .5s ease; pointer-events:none; }
+.hud-corner.tl{ top:18px; left:18px; border-top:2px solid; border-left:2px solid; }
+.hud-corner.tr{ top:18px; right:18px; border-top:2px solid; border-right:2px solid; }
+.hud-corner.bl{ bottom:18px; left:18px; border-bottom:2px solid; border-left:2px solid; }
+.hud-corner.br{ bottom:18px; right:18px; border-bottom:2px solid; border-right:2px solid; }
+
+.hud-breadcrumb{ position:fixed; top:26px; left:56px; z-index:40; font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--muted); line-height:1.6; pointer-events:none; }
+.hud-breadcrumb b{ color:var(--accent); font-weight:500; transition:color .5s ease; }
+
+.hud-gizmo{ position:fixed; top:22px; right:56px; z-index:40; width:60px; height:60px; pointer-events:none; }
+.hud-gizmo svg{ width:100%; height:100%; transition: transform 70s linear; color:var(--accent); }
+.hud-gizmo.spin svg{ transform: rotate(360deg); }
+
+.hud-readout{ position:fixed; bottom:26px; left:56px; z-index:40; font-family:var(--mono); font-size:10px; letter-spacing:.06em; color:var(--muted); opacity:.65; pointer-events:none; }
+
+@media (max-width: 720px){
+  .hud-breadcrumb, .hud-gizmo, .hud-readout{ display:none; }
+  .hud-corner{ width:14px; height:14px; }
+}
+
+/* ---------- 3. NAVEGACIÓN ---------- */
+.nav{ position:fixed; top:0; left:0; height:100vh; width:96px; z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; border-right:1px solid var(--line); background:linear-gradient(180deg, rgba(10,10,16,.4), rgba(10,10,16,.78)); backdrop-filter: blur(6px); }
+.nav-item{ position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; width:100%; padding:12px 4px; color:var(--muted); }
+.nav-item svg{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.6; transition: stroke .3s ease, transform .3s ease; }
+.nav-item .lbl{ font-family:var(--mono); font-size:9px; letter-spacing:.05em; text-transform:uppercase; opacity:.85; }
+.nav-item .dot{ position:absolute; left:10px; top:14px; width:5px; height:5px; border-radius:50%; background:var(--item-color, var(--neutral)); opacity:0; transition:opacity .3s ease; }
+.nav-item:hover{ color:var(--text); }
+.nav-item:hover svg{ transform: translateY(-2px); }
+.nav-item.active{ color:var(--item-color, var(--text)); }
+.nav-item.active .dot{ opacity:1; }
+.nav-item.active svg{ stroke:var(--item-color, var(--text)); }
+
+@media (max-width: 720px){
+  .nav{ top:auto; bottom:0; left:0; height:64px; width:100vw; flex-direction:row; border-right:none; border-top:1px solid var(--line); justify-content:space-around; }
+  .nav-item{ padding:6px 2px; width:auto; flex:1; }
+  .nav-item .lbl{ font-size:7.5px; }
+  .nav-item .dot{ left:50%; transform:translateX(-50%); top:2px; }
+}
+
+/* ---------- 4. ESCENAS (layout general) ---------- */
+.scenes{ position:relative; height:100vh; margin-left:96px; }
+@media (max-width:720px){ .scenes{ margin-left:0; height:calc(100vh - 64px); } }
+
+.scene{ position:absolute; inset:0; overflow-y:auto; padding: 96px 64px 64px; opacity:0; visibility:hidden; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.scene.active{ opacity:1; visibility:visible; transform:translateY(0); }
+@media (max-width:720px){ .scene{ padding:70px 22px 40px; } }
+
+.eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; transition:color .5s ease; }
+h1,h2,h3{ font-family:var(--display); font-weight:400; letter-spacing:-.01em; text-transform:uppercase; }
+p{ line-height:1.65; color:var(--muted); font-size:15.5px; max-width:62ch; }
+
+.wipe{ position:fixed; inset:0; z-index:100; pointer-events:none; background:var(--accent); opacity:0; transform: scaleX(0); transform-origin:left; }
+.wipe.play{ animation: wipe-sweep .55s ease forwards; }
+@keyframes wipe-sweep{ 0%{ opacity:.9; transform:scaleX(0); transform-origin:left; } 48%{ opacity:.9; transform:scaleX(1); transform-origin:left; } 50%{ transform-origin:right; } 100%{ opacity:0; transform:scaleX(0); transform-origin:right; } }
+@media (prefers-reduced-motion: reduce){ .wipe{ display:none; } .scene{ transition: opacity .25s ease; transform:none !important; } #trailCanvas{ display:none; } }
+
+/* ---------- 5. BANNER INTERACTIVO DE TÍTULO ----------
+   Cada título de sección son TRES copias del mismo texto superpuestas:
+   .banner-outline -> solo el contorno (siempre visible, tenue)
+   .banner-fill    -> relleno con degradado de color + textura
+   .banner-image   -> una IMAGEN recortada con la forma de las letras
+                      (se define por sección con data-img -> --banner-img)
+
+   .banner-fill y .banner-image están OCULTAS por defecto (opacity:0) y
+   solo aparecen al pasar el mouse por encima del banner (:hover), dentro
+   de un círculo tipo "linterna" que sigue al cursor. El JS (sección 6 de
+   script.js) actualiza --mx/--my en cada movimiento del mouse y lee
+   data-img para poner la ruta de la imagen en --banner-img. */
+.section-banner{ position:relative; display:inline-block; margin-bottom:26px; --reveal:180px; }
+.banner-outline, .banner-fill, .banner-image{
+  display:block; font-family:var(--display); font-weight:400; text-transform:uppercase;
+  font-size:clamp(2.4rem, 9vw, 6rem); line-height:.92; letter-spacing:-.01em;
+  white-space:normal;
+}
+.banner-outline{
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--accent);
+}
+
+/* Capas reveladas por el mouse: mismo recorte (a la forma del texto) y
+   misma máscara circular centrada en el cursor. Ocultas hasta :hover. */
+.banner-fill, .banner-image{
+  position:absolute; inset:0; color:transparent; pointer-events:none;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-mask-image: radial-gradient(circle var(--reveal) at var(--mx,50%) var(--my,50%), #000 0%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(circle var(--reveal) at var(--mx,50%) var(--my,50%), #000 0%, #000 55%, transparent 100%);
+  opacity:0; transition: opacity .35s ease;
+}
+.section-banner:hover .banner-fill,
+.section-banner:hover .banner-image{ opacity:1; }
+
+.banner-fill{
+  background:
+    repeating-linear-gradient(135deg, transparent 0 8px, rgba(255,255,255,.10) 8px 9px),
+    linear-gradient(120deg, var(--accent), var(--text) 150%);
+  background-blend-mode: overlay;
+}
+
+/* La imagen se pone por sección con data-img (script.js sección 6). Va
+   por encima del degradado, así que cuando hay imagen se ve la foto;
+   si no hay data-img, --banner-img queda vacío y solo se ve el degradado. */
+.banner-image{
+  background-image: var(--banner-img);
+  background-size: cover;
+  background-position: center;
+}
+.section-banner:not([data-img]) .banner-image{ display:none; }
+
+@media (max-width:720px){
+  .banner-outline, .banner-fill, .banner-image{ font-size:clamp(2rem, 11vw, 3.4rem); }
+}
+
+/* ---------- 6. HERO (Inicio) ---------- */
+#inicio{ display:flex; flex-direction:column; justify-content:center; }
+.hero-name{ font-size: clamp(2.6rem, 8vw, 6rem); line-height:.94; perspective: 700px; text-transform:uppercase; color:var(--text); }
+.hero-name .letter{
+  display:inline-block; transform-style:preserve-3d;
+  opacity:0; transform: rotateX(-100deg) translateY(14px);
+  animation: letter-in .7s cubic-bezier(.2,.8,.2,1) forwards;
+  animation-delay: calc(var(--i) * 35ms);
+}
+@keyframes letter-in{ to{ opacity:1; transform: rotateX(0) translateY(0); } }
+
+.hero-spectrum{
+  width:120px; height:4px; margin-top:22px; border-radius:2px;
+  background: linear-gradient(90deg, var(--red), var(--magenta), var(--blue), var(--green), var(--red));
+  background-size:200% 100%;
+  animation: spectrum-shift 6s linear infinite;
+}
+@keyframes spectrum-shift{ to{ background-position:200% 0; } }
+
+.hero-sub{ margin-top:22px; font-size:17px; max-width:46ch; opacity:0; animation: fade-up .6s ease .5s forwards; }
+.hero-cta{ margin-top:38px; display:flex; gap:14px; flex-wrap:wrap; opacity:0; animation: fade-up .6s ease .65s forwards; }
+@keyframes fade-up{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+.btn{ font-family:var(--mono); font-size:12.5px; letter-spacing:.05em; text-transform:uppercase; padding:13px 22px; border-radius:2px; border:1px solid var(--line); display:inline-flex; align-items:center; gap:8px; color:var(--text); transition: border-color .25s ease, transform .2s ease; }
+.btn:hover{ border-color:var(--accent); transform:translateY(-2px); }
+.btn.primary{ background:var(--text); color:#0a0a10; border-color:var(--text); }
+.btn.primary:hover{ background:var(--accent); border-color:var(--accent); color:#0a0a10; }
+.hero-channels{ margin-top:56px; display:flex; gap:26px; flex-wrap:wrap; opacity:0; animation: fade-up .6s ease .8s forwards; }
+.channel-tag{ font-family:var(--mono); font-size:11px; color:var(--muted); display:flex; align-items:center; gap:8px; text-transform:none; }
+.channel-tag i{ width:8px; height:8px; display:inline-block; }
+
+/* ---------- 7. SOBRE MÍ ---------- */
+.mission{ font-family:var(--body); font-weight:600; font-size:clamp(1.4rem,3vw,2.1rem); line-height:1.35; max-width:22ch; color:var(--accent); margin-bottom:46px; text-transform:none; }
+.about-grid{ display:grid; grid-template-columns: 1.2fr .8fr; gap:60px; max-width:1100px; }
+@media (max-width:860px){ .about-grid{ grid-template-columns:1fr; gap:34px; } }
+.about-meta{ font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.04em; margin-bottom:20px; }
+.chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+.chip{ font-family:var(--mono); font-size:11px; letter-spacing:.03em; padding:8px 12px; border:1px dashed var(--line); color:var(--muted); border-radius:2px; }
+.about-note{ margin-top:28px; font-family:var(--mono); font-size:10.5px; color:var(--muted); border-left:2px solid var(--accent); padding-left:12px; opacity:.75; }
+
+/* ---------- 8. SECCIONES DE PROYECTOS (lista + detalle) ---------- */
+.scene-head{ max-width:70ch; margin-bottom:44px; }
+.scene-head p{ margin-top:6px; }
+
+.work-list{ max-width:920px; border-top:1px solid var(--line); }
+.work-item{ display:flex; align-items:center; gap:24px; width:100%; text-align:left; padding:26px 4px; border-bottom:1px solid var(--line); border-left:2px solid transparent; transition: border-color .25s ease, padding-left .25s ease, background .25s ease; }
+.work-item:hover, .work-item:focus-visible{ border-left-color:var(--accent); padding-left:18px; background:rgba(255,255,255,.02); }
+.work-item .wi-tag{ font-family:var(--mono); font-size:10.5px; color:var(--accent); text-transform:uppercase; letter-spacing:.06em; width:120px; flex-shrink:0; }
+.work-item .wi-title{ font-family:var(--display); font-weight:400; font-size:clamp(1.05rem,2.4vw,1.5rem); text-transform:uppercase; flex:1; }
+.work-item .wi-arrow{ font-family:var(--mono); font-size:13px; color:var(--muted); transition: transform .25s ease, color .25s ease; }
+.work-item:hover .wi-arrow{ transform: translateX(4px); color:var(--accent); }
+@media (max-width:640px){
+  .work-item{ flex-wrap:wrap; gap:6px 24px; }
+  .work-item .wi-tag{ width:auto; order:1; }
+  .work-item .wi-title{ order:2; width:100%; }
+  .work-item .wi-arrow{ order:3; }
+}
+
+.project-detail{ max-width:960px; }
+.detail-back{ font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--muted); display:inline-flex; align-items:center; gap:8px; margin-bottom:32px; }
+.detail-back:hover{ color:var(--accent); }
+/* Copia del botón al final de la ficha (la agrega script.js) */
+.detail-back.is-bottom{ display:flex; width:100%; margin:48px 0 0; padding-top:20px; border-top:1px solid var(--line); }
+.detail-head{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:8px; }
+.detail-head h3{ font-size: clamp(1.5rem,3.4vw,2.1rem); }
+.project-tag{ font-family:var(--mono); font-size:10.5px; color:var(--accent); text-transform:uppercase; letter-spacing:.06em; }
+.project-detail p{ margin:14px 0 26px; }
+
+.embed-slot{ position:relative; border:1.5px dashed var(--line); border-radius:4px; aspect-ratio: 16/9; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); text-align:center; padding:20px; font-family:var(--mono); font-size:12px; background: repeating-linear-gradient(135deg, transparent 0 12px, rgba(255,255,255,.02) 12px 24px); }
+.embed-slot span{ font-size:10.5px; opacity:.7; max-width:40ch; }
+/* Cuando pegás un <iframe> (Sketchfab, YouTube, etc.) dentro de un
+   .embed-slot: ocupa todo el recuadro y se le quita el borde punteado
+   de placeholder. */
+.embed-slot iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; border-radius:4px; }
+.embed-slot:has(iframe){ border-style:solid; border-color:var(--line); padding:0; background:#000; }
+/* Lo mismo para un <video> propio (archivos en images/videos/). */
+.embed-slot video{ position:absolute; inset:0; width:100%; height:100%; border:0; border-radius:4px; object-fit:contain; background:#000; }
+.embed-slot:has(video){ border-style:solid; border-color:var(--line); padding:0; background:#000; }
+/* Y para una imagen principal (<img>) en lugar de video. */
+.embed-slot > img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; border-radius:4px; }
+.embed-slot:has(> img){ border-style:solid; border-color:var(--line); padding:0; background:#000; }
+
+.process-row{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-top:18px; }
+@media (max-width:640px){ .process-row{ grid-template-columns:repeat(2,1fr); } }
+.process-slot{ border:1.5px dashed var(--line); border-radius:4px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--mono); font-size:10px; color:var(--muted); padding:10px; overflow:hidden; }
+/* Cuando el slot es una foto real (un <img> dentro): la imagen llena el
+   cuadrado, sin borde punteado, y hace un leve zoom al pasar el mouse. */
+.process-slot:has(img){ border-style:solid; padding:0; }
+.process-slot img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .3s ease; }
+.process-slot:hover img{ transform:scale(1.05); }
+
+.illus-slot-lg{ border:1.5px dashed var(--line); border-radius:4px; aspect-ratio:4/3; width:100%; display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--mono); font-size:12px; color:var(--muted); overflow:hidden; }
+/* Cuando el slot grande tiene una imagen real: la foto lo llena, sin
+   borde punteado. */
+.illus-slot-lg:has(img){ border-style:solid; }
+.illus-slot-lg img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Galería de miniaturas debajo de la imagen principal (piezas extra de
+   una misma serie). Reutiliza el mismo look que .process-slot. */
+.illus-gallery{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-top:12px; }
+
+.ext-link{ margin-top:22px; display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--text); border-bottom:1px solid var(--line); padding-bottom:3px; }
+.ext-link:hover{ color:var(--accent); border-color:var(--accent); }
+
+/* ---------- 9. ESCENAS "EN CONSTRUCCIÓN" ---------- */
+.soon-wrap{ max-width:640px; }
+.progress-track{ height:3px; width:100%; background:var(--line); margin:26px 0 10px; border-radius:2px; overflow:hidden; }
+.progress-fill{ height:100%; background:var(--accent); }
+.soon-meta{ font-family:var(--mono); font-size:11px; color:var(--muted); display:flex; justify-content:space-between; }
+
+/* ---------- 10. CONTACTO ---------- */
+.contact-links{ display:flex; flex-direction:column; gap:2px; margin-top:30px; max-width:520px; }
+.contact-row{ display:flex; justify-content:space-between; align-items:center; padding:18px 4px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:14px; }
+.contact-row span:first-child{ color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+.contact-row a:hover{ color:var(--accent); }
+
+/* ---------- 11. FICHAS DE PROYECTO ----------
+   Solo espaciado/estructura para la plantilla de ficha (ver
+   sections/experiencias-interactivas.html). Reutiliza los tokens y el
+   look existentes: bordes var(--line), números en mono con var(--accent).
+   El resto de la ficha usa clases que ya existían (.chips/.chip,
+   .eyebrow, .embed-slot, .process-row/.process-slot, .btn, .about-note). */
+.project-detail .chips{ margin-top:14px; }
+.detail-block{ margin-top:34px; }
+.detail-block .eyebrow{ margin-bottom:10px; }
+.detail-block p{ margin:0 0 6px; }
+.detail-block + .embed-slot{ margin-top:30px; }
+.how-list{ list-style:none; max-width:62ch; border-top:1px solid var(--line); counter-reset:how; }
+.how-list li{ counter-increment:how; display:flex; gap:18px; padding:14px 4px; border-bottom:1px solid var(--line); color:var(--muted); font-size:15.5px; line-height:1.65; }
+.how-list li::before{ content:counter(how, decimal-leading-zero); font-family:var(--mono); font-size:10.5px; color:var(--accent); padding-top:5px; flex-shrink:0; }
+.detail-links{ display:flex; gap:14px; flex-wrap:wrap; margin-top:30px; }
+/* Etiqueta "En desarrollo" (la agrega script.js según PROJECTS): es una
+   .chip normal; acá solo se alinea dentro de la fila de la lista. */
+.work-item .chip{ flex-shrink:0; padding:4px 10px; font-size:10px; }
+
+/* ---------- 12. GALERÍA DE CLIPS + VISOR ----------
+   Videos cortos que se ven como GIFs (plantilla en
+   sections/experiencias-interactivas.html; lógica en script.js bloque 7).
+   Cada cuadro reutiliza .process-slot (borde punteado de placeholder);
+   cuando el video carga, pasa a borde sólido igual que las fotos. */
+.clip-gallery{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:30px; }
+@media (max-width:640px){ .clip-gallery{ grid-template-columns:1fr; } }
+/* Con exactamente 3 clips: una fila de 3 en vez de 2 + 1 suelto */
+@media (min-width:641px){ .clip-gallery:has(> .clip:nth-child(3):last-child){ grid-template-columns:repeat(3, 1fr); } }
+/* Con 5, 7… clips: el último ocupa toda la fila para no quedar suelto */
+.clip-gallery > .clip:last-child:nth-child(odd):not(:nth-child(1)):not(:nth-child(3)){ grid-column:1 / -1; }
+/* Variante para imágenes verticales (pósters 4:5): fila de 4, o 2x2 en celular */
+.clip-gallery.is-portrait{ grid-template-columns:repeat(4, 1fr); }
+@media (max-width:640px){ .clip-gallery.is-portrait{ grid-template-columns:repeat(2, 1fr); } }
+.clip-gallery.is-portrait .clip-slot{ aspect-ratio:4/5; }
+.clip-slot{ position:relative; width:100%; aspect-ratio:16/9; cursor:zoom-in; }
+.clip-slot video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .3s ease; }
+.clip-slot.is-ready{ border-style:solid; padding:0; background:#000; }
+.clip-slot.is-ready .clip-ph{ display:none; }
+.clip-slot.is-missing{ cursor:default; }
+.clip-slot:hover video{ transform:scale(1.05); }
+/* La galería también acepta fotos (<img> en vez de <video>): se muestran
+   completas (contain) porque suelen ser láminas con varias imágenes. */
+.clip-slot img{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; }
+.clip-slot.is-ready:has(img){ background:var(--bg); }
+.clip-caption{ margin-top:8px; font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted); }
+
+/* Visor ampliado (lo crea script.js una sola vez). Queda debajo del
+   barrido (.wipe, z-index 100) y encima del nav y del HUD. */
+.lightbox{ position:fixed; inset:0; z-index:90; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:72px 40px 40px; background:rgba(10,10,16,.92); backdrop-filter:blur(6px); }
+.lightbox[hidden]{ display:none; }
+.lightbox-stage video, .lightbox-stage img{ display:block; max-width:min(1100px, 90vw); max-height:76vh; width:auto; height:auto; border:1px solid var(--line); border-radius:4px; background:#000; }
+.lightbox-caption{ font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--muted); text-align:center; max-width:70ch; }
+.lightbox-caption[hidden]{ display:none; }
+.lightbox-close{ position:absolute; top:24px; right:24px; }
+
+/* ---------- 13. VIDEO PRINCIPAL DE FICHA ----------
+   Plantilla en sections/experiencias-interactivas.html; lógica en
+   script.js bloque 8. Se apoya en .embed-slot (borde sólido + fondo negro
+   cuando tiene video) y le agrega:
+   - Tamaño: la proporción la pone JS según el video (--mv-ratio / --mv-ar)
+     y el ancho se limita para que el alto nunca pase de 70vh. En pantallas
+     angostas ocupa todo el ancho disponible.
+   - Marco: corchetes de esquina como los del HUD, en el color de la sección.
+   - Capa de reproducción: botón circular + etiqueta estilo .btn, que
+     desaparece al darle play (.is-playing). */
+.main-video{
+  aspect-ratio: var(--mv-ratio, 16 / 9);
+  width: min(100%, calc(70vh * var(--mv-ar, 1.7778)));
+  border-color: rgba(242,240,250,.16);
+}
+.main-video video{ object-fit:contain; }
+
+.mv-corner{ position:absolute; width:18px; height:18px; border:0 solid var(--accent); opacity:.6; pointer-events:none; transition:border-color .5s ease; }
+.mv-corner.tl{ top:-7px; left:-7px; border-top-width:2px; border-left-width:2px; }
+.mv-corner.tr{ top:-7px; right:-7px; border-top-width:2px; border-right-width:2px; }
+.mv-corner.bl{ bottom:-7px; left:-7px; border-bottom-width:2px; border-left-width:2px; }
+.mv-corner.br{ bottom:-7px; right:-7px; border-bottom-width:2px; border-right-width:2px; }
+
+.mv-overlay{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; border-radius:4px; background:linear-gradient(180deg, rgba(10,10,16,.1), rgba(10,10,16,.5)); transition:background .3s ease; }
+.mv-overlay:hover{ background:linear-gradient(180deg, rgba(10,10,16,.25), rgba(10,10,16,.62)); }
+.mv-icon{ width:68px; height:68px; border-radius:50%; border:1.5px solid var(--accent); background:rgba(10,10,16,.6); backdrop-filter:blur(4px); display:grid; place-items:center; transition:transform .25s ease, background .25s ease; }
+.mv-icon::before{ content:''; margin-left:5px; border-style:solid; border-width:10px 0 10px 16px; border-color:transparent transparent transparent var(--accent); transition:border-color .25s ease; }
+.mv-overlay:hover .mv-icon{ transform:scale(1.07); background:var(--accent); }
+.mv-overlay:hover .mv-icon::before{ border-left-color:#0a0a10; }
+.mv-label{ font-weight:500; background:rgba(10,10,16,.72); backdrop-filter:blur(4px); padding:9px 16px; }
+.mv-overlay:hover .mv-label{ border-color:var(--accent); transform:translateY(-2px); }
+.mv-time{ font-style:normal; color:var(--muted); }
+.mv-time:not(:empty)::before{ content:'·'; margin:0 10px; }
+.main-video.is-playing .mv-overlay{ display:none; }
+
+@media (max-width:640px){
+  .main-video{ width:100%; }
+  .mv-icon{ width:54px; height:54px; }
+  .mv-label{ font-size:11px; padding:7px 12px; }
+}

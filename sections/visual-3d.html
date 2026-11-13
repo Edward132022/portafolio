@@ -1,0 +1,346 @@
+<!-- =========================================================================
+     SECCIÓN: 3D Y VISUAL (05)
+     (Antes "Modelado 3D"; conserva su color de canal: --red. Acá también
+     viven los proyectos que antes estaban en la escena "Ilustración".)
+
+     Usa el patrón "lista → detalle":
+       .project-index  -> la lista de proyectos que se ve primero.
+       .project-detail -> un panel por proyecto, oculto con [hidden]
+                           hasta que el usuario hace clic en su fila.
+     Cada fila de la lista (.work-item) tiene:
+       data-scene  -> el id de esta <section> ("visual-3d")
+       data-target -> el id del .project-detail que debe abrir
+     La función openProject(sceneId, projectId) en script.js hace el
+     cambio; closeProject() vuelve a la lista con el botón "← Volver".
+     Las piezas de ilustración usan .illus-slot-lg (imagen grande) en vez
+     de un embed 3D.
+========================================================================= -->
+<section class="scene" id="visual-3d" data-name="05_3D_Y_VISUAL">
+  <div class="scene-head">
+    <div class="eyebrow">Escena 05 — 3D y visual</div>
+    <div class="section-banner" data-img="images/modelado-3d.webp">
+      <span class="banner-outline" aria-hidden="true">3D y visual</span>
+      <span class="banner-fill" aria-hidden="true">3D y visual</span>
+      <span class="banner-image" aria-hidden="true">3D y visual</span>
+    </div>
+    <p>Abrí un proyecto para ver el modelo interactivo, la ilustración en grande y el proceso detrás de cada pieza.</p>
+  </div>
+
+  <!-- ---- VISTA 1: lista de proyectos ---- -->
+  <div class="project-index">
+    <div class="work-list">
+      <button class="work-item" data-scene="visual-3d" data-target="pv-mulaga25">
+        <span class="wi-tag">Modelado 3D / Maya</span><span class="wi-title">Múlaga25 · Modelado 3D</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="visual-3d" data-target="pv-whale">
+        <span class="wi-tag">Escena / Render</span><span class="wi-title">Blue Whale 3D Scene</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="visual-3d" data-target="pv-robot">
+        <span class="wi-tag">Personaje</span><span class="wi-title">Robot Posando</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="visual-3d" data-target="pv-lego">
+        <span class="wi-tag">Escena</span><span class="wi-title">Lego Karateka y su Dojo</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="visual-3d" data-target="pv-new3d">
+        <span class="wi-tag">[Categoría]</span><span class="wi-title">[Nuevo proyecto]</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <!-- Ilustración (antes era una escena aparte) -->
+      <button class="work-item" data-scene="visual-3d" data-target="il-faces">
+        <span class="wi-tag">Digital</span><span class="wi-title">Instagram Faces</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="visual-3d" data-target="il-new1">
+        <span class="wi-tag">[Categoría]</span><span class="wi-title">[Nueva ilustración]</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="visual-3d" data-target="il-new2">
+        <span class="wi-tag">[Categoría]</span><span class="wi-title">[Nueva ilustración]</span><span class="wi-arrow">Ver →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---- VISTA 2: detalle de cada proyecto (uno por bloque, oculto por defecto) ---- -->
+  <!-- Múlaga25 — ficha con la plantilla nueva (ver sections/experiencias-interactivas.html) -->
+  <div class="project-detail" id="pv-mulaga25" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>Múlaga25 · Modelado 3D</h3><span class="project-tag">2025</span></div>
+    <div class="chips">
+      <span class="chip">Maya</span>
+      <span class="chip">Mudbox</span>
+      <span class="chip">ZBrush</span>
+    </div>
+    <p class="detail-idea">Mi trabajo de modelado para Múlaga25, un shooter creado para celebrar los 25 años del programa de Ingeniería en Multimedia de la Universidad Militar; de ahí su nombre.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Modelador principal. Modelé el lobby, que es la parte exterior de la sede Calle 100 de la universidad, y los assets: las armas, el escudo y los arrojables. También me encargué del texturizado en general. Proyecto en equipo para las materias Aplicaciones 3D e Integración Multimedia.</p>
+    </div>
+
+    <!-- Imagen principal -->
+    <div class="embed-slot"><img src="images/mulaga25/mul1.webp" alt="Render de la Facultad de Derecho modelada para Múlaga25" loading="lazy"></div>
+
+    <div class="detail-block">
+      <div class="eyebrow">Proceso</div>
+      <ol class="how-list">
+        <li>Modelado del lobby y de los assets (armas, escudo y arrojables) en Maya.</li>
+        <li>Texturas pintadas en Mudbox y, en algunos casos, esculpidas directamente en ZBrush.</li>
+        <li>Entrega de los modelos en FBX al equipo, que se encargó de integrarlos en el juego.</li>
+      </ol>
+    </div>
+
+    <!-- Galería de imágenes (mismo componente que la galería de clips, con <img>).
+         Clic en una imagen -> se ve ampliada. -->
+    <div class="clip-gallery">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 1 de Múlaga25">
+          <span class="clip-ph">[mul2.webp]</span>
+          <img src="images/mulaga25/mul2.webp" alt="Modelado del arma: vistas y versiones" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 2 de Múlaga25">
+          <span class="clip-ph">[mul3.webp]</span>
+          <img src="images/mulaga25/mul3.webp" alt="Escenario del campus dentro del juego" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 3 de Múlaga25">
+          <span class="clip-ph">[mul4.webp]</span>
+          <img src="images/mulaga25/mul4.webp" alt="Arma: antes y ahora" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 4 de Múlaga25">
+          <span class="clip-ph">[mul5.webp]</span>
+          <img src="images/mulaga25/mul5.webp" alt="Texturizado de enemigos y assets complementarios" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 5 de Múlaga25">
+          <span class="clip-ph">[mul6.webp]</span>
+          <img src="images/mulaga25/mul6.webp" alt="Logo de Arcade Múlaga 25" loading="lazy">
+        </button>
+      </figure>
+    </div>
+  </div>
+
+  <div class="project-detail" id="pv-whale" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>Blue Whale 3D Scene</h3><span class="project-tag">2025</span></div>
+    <div class="chips">
+      <span class="chip">Maya</span>
+      <span class="chip">Arnold</span>
+      <span class="chip">Mudbox</span>
+    </div>
+    <p class="detail-idea">Escena submarina de una ballena azul nadando sobre un cofre del tesoro en el fondo del mar.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Proyecto individual para la materia de Render. Hice todo: modelado, UVs, texturas, escenario, atmósfera y render, para que la escena se sintiera como un fondo marino.</p>
+    </div>
+
+    <!-- Modelo 3D principal (Sketchfab) -->
+    <div class="embed-slot">
+      <iframe title="Ballena y cofre"
+              src="https://sketchfab.com/models/a29e41c5e231467a99f93310196efe89/embed?ui_theme=dark"
+              allow="autoplay; fullscreen; xr-spatial-tracking"
+              allowfullscreen
+              loading="lazy"></iframe>
+    </div>
+    <a class="ext-link" href="https://www.behance.net/gallery/243412313/Blue-Whale-3D-Scene" target="_blank" rel="noopener">Ver en Behance ↗</a>
+
+    <div class="detail-block">
+      <div class="eyebrow">Proceso</div>
+      <ol class="how-list">
+        <li>Modelado de la ballena, el cofre con monedas y el terreno del fondo marino.</li>
+        <li>Organización y corrección de UVs, y texturas en Mudbox.</li>
+        <li>Atmósfera e iluminación con varias luces focales para que se sienta bajo el agua.</li>
+        <li>Render final en Arnold, con burbujas y brillo en las monedas.</li>
+      </ol>
+    </div>
+
+    <!-- Galería de imágenes (clic -> se ve ampliada) -->
+    <div class="clip-gallery">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 1 de Blue Whale 3D Scene">
+          <span class="clip-ph">[ballena4.webp]</span>
+          <img src="images/ballena/ballena4.webp" alt="Blue Whale 3D Scene — proceso 01" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 2 de Blue Whale 3D Scene">
+          <span class="clip-ph">[ballena1.webp]</span>
+          <img src="images/ballena/ballena1.webp" alt="Blue Whale 3D Scene — proceso 02" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 3 de Blue Whale 3D Scene">
+          <span class="clip-ph">[ballena3.webp]</span>
+          <img src="images/ballena/ballena3.webp" alt="Blue Whale 3D Scene — proceso 03" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 4 de Blue Whale 3D Scene">
+          <span class="clip-ph">[ballena2.webp]</span>
+          <img src="images/ballena/ballena2.webp" alt="Blue Whale 3D Scene — proceso 04" loading="lazy">
+        </button>
+      </figure>
+    </div>
+  </div>
+
+  <div class="project-detail" id="pv-robot" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>Robot Posando</h3><span class="project-tag">2024</span></div>
+    <div class="chips">
+      <span class="chip">Maya</span>
+      <span class="chip">Mudbox</span>
+    </div>
+    <p class="detail-idea">Estudio de modelado de superficies duras (hard surface) y articulación mecánica: un personaje robótico integrado en fotografías de entornos reales.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Proyecto individual para la materia de Modelado 3D: modelado hard surface, UVs, texturas y rig para poder posarlo.</p>
+    </div>
+
+    <!-- Modelo 3D principal (Sketchfab) -->
+    <div class="embed-slot">
+      <iframe title="Robot Posando"
+              src="https://sketchfab.com/models/f30c9163a97f4a0ebfa310c4a3c200d2/embed?ui_theme=dark"
+              allow="autoplay; fullscreen; xr-spatial-tracking"
+              allowfullscreen
+              loading="lazy"></iframe>
+    </div>
+    <a class="ext-link" href="https://www.behance.net/gallery/243561077/Robot-Posando" target="_blank" rel="noopener">Ver en Behance ↗</a>
+
+    <div class="detail-block">
+      <div class="eyebrow">Proceso</div>
+      <ol class="how-list">
+        <li>Modelado hard surface del robot, cuidando la topología de la malla.</li>
+        <li>Organización y corrección de UVs, y texturas en Mudbox.</li>
+        <li>Rig con controles para articular las piezas y posar al personaje.</li>
+        <li>Integración del robot en fotografías reales, de día y de noche.</li>
+      </ol>
+    </div>
+
+    <!-- Galería de imágenes (clic -> se ve ampliada) -->
+    <div class="clip-gallery">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 1 de Robot Posando">
+          <span class="clip-ph">[robot3.webp]</span>
+          <img src="images/robot/robot3.webp" alt="Robot Posando — proceso 01" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 2 de Robot Posando">
+          <span class="clip-ph">[robot1.webp]</span>
+          <img src="images/robot/robot1.webp" alt="Robot Posando — proceso 02" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 3 de Robot Posando">
+          <span class="clip-ph">[robot2.webp]</span>
+          <img src="images/robot/robot2.webp" alt="Robot Posando — proceso 03" loading="lazy">
+        </button>
+      </figure>
+    </div>
+  </div>
+
+  <div class="project-detail" id="pv-lego" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>Lego Karateka y su Dojo</h3><span class="project-tag">2025</span></div>
+    <div class="chips">
+      <span class="chip">Maya</span>
+      <span class="chip">Arnold</span>
+      <span class="chip">Mudbox</span>
+    </div>
+    <p class="detail-idea">Un lego personalizado y su entorno: un karateka en su dojo, en una pose de acción dinámica simulando una patada.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Proyecto individual para la materia de Render: modelado, UVs, texturas, escenario y render.</p>
+    </div>
+
+    <!-- Modelo 3D principal (Sketchfab) -->
+    <div class="embed-slot">
+      <iframe title="Lego karateka en su dojo"
+              src="https://sketchfab.com/models/da7cf3b5543640dbb47e8df47e97c6f1/embed?ui_theme=dark"
+              allow="autoplay; fullscreen; xr-spatial-tracking"
+              allowfullscreen
+              loading="lazy"></iframe>
+    </div>
+    <a class="ext-link" href="https://www.behance.net/gallery/243605775/Lego-Karateka-y-su-Dojo" target="_blank" rel="noopener">Ver en Behance ↗</a>
+
+    <div class="detail-block">
+      <div class="eyebrow">Proceso</div>
+      <ol class="how-list">
+        <li>Modelado y personalización de la figura (cabello, cara y karategi con cinturón negro).</li>
+        <li>Modelado del dojo, con las banderas de Japón y Colombia.</li>
+        <li>Organización y corrección de UVs, y texturas en Mudbox.</li>
+        <li>Pose de patada e iluminación con luces de colores para darle dinamismo.</li>
+      </ol>
+    </div>
+
+    <!-- Galería de imágenes (clic -> se ve ampliada) -->
+    <div class="clip-gallery">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 1 de Lego Karateka y su Dojo">
+          <span class="clip-ph">[lego1.webp]</span>
+          <img src="images/lego/lego1.webp" alt="Lego Karateka y su Dojo — proceso 01" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 2 de Lego Karateka y su Dojo">
+          <span class="clip-ph">[lego2.webp]</span>
+          <img src="images/lego/lego2.webp" alt="Lego Karateka y su Dojo — proceso 02" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 3 de Lego Karateka y su Dojo">
+          <span class="clip-ph">[lego3.webp]</span>
+          <img src="images/lego/lego3.webp" alt="Lego Karateka y su Dojo — proceso 03" loading="lazy">
+        </button>
+      </figure>
+    </div>
+  </div>
+
+ <div class="project-detail" id="pv-new3d" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>[Nombre del proyecto]</h3><span class="project-tag">[Categoría]</span></div>
+    <p>[Descripción corta del proyecto.]</p>
+    <div class="embed-slot">Pega aquí tu embed (iframe)<span></span></div>
+    <div class="process-row">
+      <div class="process-slot">Foto de proceso 01</div><div class="process-slot">Foto de proceso 02</div>
+      <div class="process-slot">Foto de proceso 03</div><div class="process-slot">Foto de proceso 04</div>
+    </div>
+  </div>
+
+  <!-- ===== Ilustración (detalle con imagen grande .illus-slot-lg) ===== -->
+  <div class="project-detail" id="il-faces" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>Instagram Faces</h3><span class="project-tag">Digital</span></div>
+    <p>Proyecto independiente: varios seguidores de Instagram me pidieron que los dibujara en mi estilo digital, así que los reuní a todos en un solo cuadro y después exporté cada rostro de forma individual.</p>
+    <!-- Imagen principal: ilustracion (3). Archivos en images/caras/. -->
+    <a class="illus-slot-lg" href="images/caras/ilustracion%20(3).webp" target="_blank" rel="noopener">
+      <img src="images/caras/ilustracion%20(3).webp" alt="Instagram Faces — pieza principal" loading="lazy">
+    </a>
+    <!-- Resto de la serie -->
+    <div class="illus-gallery">
+      <a class="process-slot" href="images/caras/ilustracion%20(1).webp" target="_blank" rel="noopener"><img src="images/caras/ilustracion%20(1).webp" alt="Instagram Faces — pieza 01" loading="lazy"></a>
+      <a class="process-slot" href="images/caras/ilustracion%20(2).webp" target="_blank" rel="noopener"><img src="images/caras/ilustracion%20(2).webp" alt="Instagram Faces — pieza 02" loading="lazy"></a>
+      <a class="process-slot" href="images/caras/ilustracion%20(4).webp" target="_blank" rel="noopener"><img src="images/caras/ilustracion%20(4).webp" alt="Instagram Faces — pieza 04" loading="lazy"></a>
+    </div>
+    <a class="ext-link" href="https://www.behance.net/gallery/243623997/Instagram-Faces" target="_blank" rel="noopener">Ver en Behance ↗</a>
+  </div>
+
+  <div class="project-detail" id="il-new1" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>[Nombre de la ilustración]</h3><span class="project-tag">[Categoría]</span></div>
+    <p>[Descripción corta.]</p>
+    <div class="illus-slot-lg">[Reemplaza por tu imagen en alta resolución]</div>
+  </div>
+
+  <div class="project-detail" id="il-new2" hidden>
+    <button class="detail-back" data-scene="visual-3d">← Volver a 3D y visual</button>
+    <div class="detail-head"><h3>[Nombre de la ilustración]</h3><span class="project-tag">[Categoría]</span></div>
+    <p>[Descripción corta.]</p>
+    <div class="illus-slot-lg">[Reemplaza por tu imagen en alta resolución]</div>
+  </div>
+</section>

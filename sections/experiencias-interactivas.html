@@ -1,0 +1,269 @@
+<!-- =========================================================================
+     SECCIÓN: EXPERIENCIAS INTERACTIVAS (02)
+     (Antes se llamaba "Diseño web"; conserva su color de canal: --blue.)
+
+     Patrón lista → detalle (ver comentarios en sections/visual-3d.html).
+
+     PLANTILLA DE FICHA DE PROYECTO (la usan todas las fichas nuevas):
+       .detail-head      -> título (h3) + año (.project-tag)
+       .chips            -> etiquetas de tecnologías (una .chip por tecnología)
+       p.detail-idea     -> una línea: el problema o la idea
+       .detail-block     -> "Mi rol" (y equipo si aplica)
+       .embed-slot       -> slot grande para video o GIF (pegá un <iframe>,
+                            <video> o <img> adentro; con iframe o video el
+                            borde punteado desaparece solo)
+       Después, alternar bloques de texto e imágenes para que no quede un
+       texto largo seguido, por ejemplo:
+       .detail-block     -> "Evolución del proyecto" (opcional)
+       .process-row      -> fila de imágenes de proceso (o .clip-gallery)
+       .detail-block     -> "Cómo funciona": lista .how-list con 3-4 puntos
+       .process-row      -> fila de imágenes de proceso
+
+     GALERÍA DE CLIPS (.clip-gallery) — reutilizable en cualquier ficha:
+       Cuadrícula 2 x 2 (1 columna en celular) de videos cortos que se ven
+       como GIFs. Copiá un bloque <figure class="clip"> por video:
+         <figure class="clip">
+           <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip">
+             <span class="clip-ph">[nombre-del-video.mp4]</span>
+             <video src="images/<proyecto>/<archivo>.mp4"
+                    poster="images/<proyecto>/<portada>.webp"   (opcional)
+                    muted loop playsinline preload="metadata"></video>
+           </button>
+           <figcaption class="clip-caption">Pie corto (opcional: borrá esta línea)</figcaption>
+         </figure>
+       script.js (bloque 7) se encarga del resto: reproduce cada clip solo
+       cuando está en pantalla, lo abre ampliado al hacer clic y, si el
+       archivo no carga, deja el slot punteado con el texto de .clip-ph.
+
+     VIDEO PRINCIPAL (.main-video) — reutilizable en cualquier ficha:
+       Portada + botón "▶ Reproducir · duración" encima, marco con
+       corchetes de esquina y alto máximo de 70vh. Copiá:
+         <div class="embed-slot main-video">
+           <video src="images/videos/<archivo>.mp4"
+                  poster="images/videos/<portada>.webp"
+                  playsinline preload="metadata" aria-label="Video de <proyecto>"></video>
+           <button class="mv-overlay" type="button" aria-label="Reproducir video de <proyecto>">
+             <i class="mv-icon" aria-hidden="true"></i>
+             <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
+           </button>
+           <i class="mv-corner tl" aria-hidden="true"></i><i class="mv-corner tr" aria-hidden="true"></i>
+           <i class="mv-corner bl" aria-hidden="true"></i><i class="mv-corner br" aria-hidden="true"></i>
+         </div>
+       script.js (bloque 8) lee la duración, ajusta la proporción del marco
+       al video y, al hacer clic, quita la capa y reproduce con controles.
+       Si la portada (poster) no existe, muestra un fotograma del video
+       (segundo 1; se cambia con data-frame="5" en el <video>).
+
+       (Opcional, hoy no se usa en ninguna ficha) .detail-links -> fila de
+       botones al final de la ficha. El estilo sigue en style.css; para
+       volver a usarlo, pegá después de .process-row:
+         <div class="detail-links">
+           <a class="btn primary" href="URL" target="_blank" rel="noopener">Ver código</a>
+           <a class="btn" href="URL" target="_blank" rel="noopener">Ver demo</a>
+         </div>
+
+     Visibilidad y etiqueta "En desarrollo": se configuran en script.js
+     (constante PROJECTS), no acá.
+========================================================================= -->
+<section class="scene" id="experiencias-interactivas" data-name="02_EXPERIENCIAS_INTERACTIVAS">
+  <div class="scene-head">
+    <div class="eyebrow">Escena 02 — Experiencias interactivas</div>
+    <div class="section-banner" data-img="images/feelsong/fondof.webp">
+      <span class="banner-outline" aria-hidden="true">Experiencias interactivas</span>
+      <span class="banner-fill" aria-hidden="true">Experiencias interactivas</span>
+      <span class="banner-image" aria-hidden="true">Experiencias interactivas</span>
+    </div>
+    <p>Abrí un proyecto para ver cómo funciona y el proceso detrás de él.</p>
+  </div>
+
+  <!-- ---- VISTA 1: lista de proyectos ---- -->
+  <div class="project-index">
+    <div class="work-list">
+      <button class="work-item" data-scene="experiencias-interactivas" data-target="ei-feelsong">
+        <span class="wi-tag">IA / Audio</span><span class="wi-title">FeelSong</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="experiencias-interactivas" data-target="ei-campamento">
+        <span class="wi-tag">Exposición virtual</span><span class="wi-title">De Campamento</span><span class="wi-arrow">Ver →</span>
+      </button>
+      <button class="work-item" data-scene="experiencias-interactivas" data-target="ei-orchestrion">
+        <span class="wi-tag">Concierto interactivo</span><span class="wi-title">Orchestrion</span><span class="wi-arrow">Ver →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---- VISTA 2: fichas de proyecto ---- -->
+
+  <!-- FeelSong -->
+  <div class="project-detail" id="ei-feelsong" hidden>
+    <button class="detail-back" data-scene="experiencias-interactivas">← Volver a Experiencias interactivas</button>
+    <div class="detail-head"><h3>FeelSong</h3><span class="project-tag">2026</span></div>
+    <div class="chips">
+      <span class="chip">Python</span>
+      <span class="chip">Random Forest</span>
+      <span class="chip">Procesamiento de señales</span>
+      <span class="chip">HTML</span>
+      <span class="chip">CSS</span>
+      <span class="chip">JavaScript</span>
+    </div>
+    <p class="detail-idea">Detecta emociones en audio en vivo con IA y las visualiza como una lámpara de lava interactiva en la web.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Idea original, desarrollo y dirección del proyecto en todas sus etapas: desde el procesamiento de audio y el modelo de inteligencia artificial hasta la visualización y la línea estética.</p>
+    </div>
+
+    <!-- Video principal (componente reutilizable: ver plantilla arriba) -->
+    <div class="embed-slot main-video">
+      <video src="images/videos/felsong_portafolio.mp4"
+             poster="images/videos/feelsong-poster.webp"
+             playsinline preload="metadata" aria-label="Video de FeelSong"></video>
+      <button class="mv-overlay" type="button" aria-label="Reproducir video de FeelSong">
+        <i class="mv-icon" aria-hidden="true"></i>
+        <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
+      </button>
+      <i class="mv-corner tl" aria-hidden="true"></i><i class="mv-corner tr" aria-hidden="true"></i>
+      <i class="mv-corner bl" aria-hidden="true"></i><i class="mv-corner br" aria-hidden="true"></i>
+    </div>
+
+    <!-- Texto y media alternados para no cansar con un bloque largo -->
+    <div class="detail-block">
+      <div class="eyebrow">Evolución del proyecto</div>
+      <ol class="how-list">
+        <li><span><strong>Audio y Video:</strong> nace la idea. Una primera versión clasifica las emociones de las canciones a partir de parámetros de audio ya definidos.</span></li>
+        <li><span><strong>Inteligencia Artificial:</strong> el sistema pasa a usar un modelo de Random Forest y se amplían las características que se extraen del audio, lo que hace la clasificación más precisa.</span></li>
+        <li><span><strong>Multimedia para Eventos en Vivo:</strong> se pule para funcionar en un show. Se agrega la identificación de voz y de instrumentos, más visuales y una línea estética propia.</span></li>
+      </ol>
+    </div>
+
+    <!-- Galería de clips (componente reutilizable: ver comentario arriba) -->
+    <div class="clip-gallery">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 1 de FeelSong">
+          <span class="clip-ph">[fs1.mp4]</span>
+          <video src="images/feelsong/fs1.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 2 de FeelSong">
+          <span class="clip-ph">[fs2.mp4]</span>
+          <video src="images/feelsong/fs2.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 3 de FeelSong">
+          <span class="clip-ph">[fs3.mp4]</span>
+          <video src="images/feelsong/fs3.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 4 de FeelSong">
+          <span class="clip-ph">[fs4.mp4]</span>
+          <video src="images/feelsong/fs4.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+    </div>
+
+    <div class="detail-block">
+      <div class="eyebrow">Cómo funciona</div>
+      <ol class="how-list">
+        <li>Captura audio en vivo.</li>
+        <li>Procesamiento de señales en Python extrae características del audio y un modelo Random Forest clasifica la emoción.</li>
+        <li>La web (HTML/CSS/JS) traduce esa emoción en una lámpara de lava interactiva.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- De Campamento -->
+  <div class="project-detail" id="ei-campamento" hidden>
+    <button class="detail-back" data-scene="experiencias-interactivas">← Volver a Experiencias interactivas</button>
+    <div class="detail-head"><h3>De Campamento</h3><span class="project-tag">2026</span></div>
+    <div class="chips">
+      <span class="chip">Unity</span>
+    </div>
+    <p class="detail-idea">Exposición virtual sobre pines y parches de campamentos, pensada para computador y adaptable a realidad virtual y celular.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Guion museológico, curatorial y museográfico; diseño del recorrido; ensamblaje de la escena; interacción y audio.</p>
+      <div class="about-note">Modelos de las piezas generados con IA; concepto, guion, ensamblaje, interacción y audio hechos por mí.</div>
+    </div>
+
+    <!-- Video principal (componente reutilizable: ver plantilla arriba) -->
+    <div class="embed-slot main-video">
+      <video src="images/campamento/demo_de_campamento.mp4"
+             poster="images/campamento/campamento-poster.webp"
+             playsinline preload="metadata" aria-label="Video de De Campamento"></video>
+      <button class="mv-overlay" type="button" aria-label="Reproducir video de De Campamento">
+        <i class="mv-icon" aria-hidden="true"></i>
+        <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
+      </button>
+      <i class="mv-corner tl" aria-hidden="true"></i><i class="mv-corner tr" aria-hidden="true"></i>
+      <i class="mv-corner bl" aria-hidden="true"></i><i class="mv-corner br" aria-hidden="true"></i>
+    </div>
+
+    <div class="detail-block">
+      <div class="eyebrow">Cómo funciona</div>
+      <ol class="how-list">
+        <li>Es un recorrido virtual dividido en diferentes escenas.</li>
+        <li>Al hacer clic en una pieza (pin o parche) suena el himno de su campamento.</li>
+        <li>En computador se navega con el mouse y el clic derecho.</li>
+        <li>Las versiones para realidad virtual y celular todavía están en desarrollo.</li>
+      </ol>
+    </div>
+
+    <!-- Galería de clips (componente reutilizable: ver comentario arriba) -->
+    <div class="clip-gallery">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 1 de De Campamento">
+          <span class="clip-ph">[dc1.mp4]</span>
+          <video src="images/campamento/dc1.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 2 de De Campamento">
+          <span class="clip-ph">[dc2.mp4]</span>
+          <video src="images/campamento/dc2.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar clip 3 de De Campamento">
+          <span class="clip-ph">[de7.mp4]</span>
+          <video src="images/campamento/de7.mp4" muted loop playsinline preload="metadata"></video>
+        </button>
+      </figure>
+    </div>
+  </div>
+
+  <!-- Orchestrion (OCULTO por ahora: ver PROJECTS en script.js) -->
+  <div class="project-detail" id="ei-orchestrion" hidden>
+    <button class="detail-back" data-scene="experiencias-interactivas">← Volver a Experiencias interactivas</button>
+    <div class="detail-head"><h3>Orchestrion</h3><span class="project-tag">[Año]</span></div>
+    <div class="chips">
+      <span class="chip">[Tecnología]</span>
+      <span class="chip">[Tecnología]</span>
+    </div>
+    <p class="detail-idea">Concierto interactivo autorregulable para eventos en vivo, con demo web.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>[Tu rol en el proyecto]. Equipo: Alejandro Silva, Karen Silva.</p>
+    </div>
+
+    <div class="embed-slot">[Video o GIF de Orchestrion]<span>Pegá acá un iframe, &lt;video&gt; o &lt;img&gt; (GIF)</span></div>
+
+    <div class="detail-block">
+      <div class="eyebrow">Cómo funciona</div>
+      <ol class="how-list">
+        <li>[Punto 1]</li>
+        <li>[Punto 2]</li>
+        <li>[Punto 3]</li>
+      </ol>
+    </div>
+
+    <div class="process-row">
+      <div class="process-slot">[Imagen de proceso 01]</div>
+      <div class="process-slot">[Imagen de proceso 02]</div>
+      <div class="process-slot">[Imagen de proceso 03]</div>
+    </div>
+  </div>
+</section>

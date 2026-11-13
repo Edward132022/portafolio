@@ -1,0 +1,99 @@
+<!-- =========================================================================
+     SECCIÓN: APPS Y WEB (03)
+     (Antes se llamaba "Desarrollo web"; conserva su color de canal: --green.)
+     Patrón lista → detalle. La estructura de cada ficha está explicada en
+     sections/experiencias-interactivas.html.
+========================================================================= -->
+<section class="scene" id="apps-web" data-name="03_APPS_Y_WEB">
+  <div class="scene-head">
+    <div class="eyebrow">Escena 03 — Apps y web</div>
+    <div class="section-banner" data-img="images/umgphat/UMNG-Path_promo_1.webp">
+      <span class="banner-outline" aria-hidden="true">Apps y web</span>
+      <span class="banner-fill" aria-hidden="true">Apps y web</span>
+      <span class="banner-image" aria-hidden="true">Apps y web</span>
+    </div>
+    <p>Abrí un proyecto para ver cómo funciona y el proceso detrás de él.</p>
+  </div>
+
+  <!-- ---- VISTA 1: lista de proyectos ---- -->
+  <div class="project-index">
+    <div class="work-list">
+      <button class="work-item" data-scene="apps-web" data-target="aw-umng-path">
+        <span class="wi-tag">App Android / Web</span><span class="wi-title">UMNG Path</span><span class="wi-arrow">Ver →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---- VISTA 2: fichas de proyecto ---- -->
+
+  <!-- UMNG Path (etiqueta "En desarrollo": ver PROJECTS en script.js) -->
+  <div class="project-detail" id="aw-umng-path" hidden>
+    <button class="detail-back" data-scene="apps-web">← Volver a Apps y web</button>
+    <div class="detail-head"><h3>UMNG Path</h3><span class="project-tag">2026</span></div>
+    <div class="chips">
+      <span class="chip">React</span>
+      <span class="chip">Vite</span>
+      <span class="chip">Firebase</span>
+      <span class="chip">Capacitor</span>
+      <span class="chip">Figma</span>
+    </div>
+    <p class="detail-idea">App Android y web para que los estudiantes de la UMNG no se pierdan en el campus y se enteren de los eventos.</p>
+
+    <div class="detail-block">
+      <div class="eyebrow">Mi rol</div>
+      <p>Backend y desarrollo (Edward García). Equipo: Karen Silva (PM / UX-UI), Juanita Palacios (frontend).</p>
+    </div>
+
+    <!-- Video principal (componente reutilizable: ver plantilla en experiencias-interactivas.html) -->
+    <div class="embed-slot main-video">
+      <video src="images/umgphat/demo_UMNG_PHAT.mp4"
+             poster="images/umgphat/umng-path-poster.webp"
+             playsinline preload="metadata" aria-label="Video de UMNG Path"></video>
+      <button class="mv-overlay" type="button" aria-label="Reproducir video de UMNG Path">
+        <i class="mv-icon" aria-hidden="true"></i>
+        <b class="btn mv-label">▶ Reproducir<em class="mv-time"></em></b>
+      </button>
+      <i class="mv-corner tl" aria-hidden="true"></i><i class="mv-corner tr" aria-hidden="true"></i>
+      <i class="mv-corner bl" aria-hidden="true"></i><i class="mv-corner br" aria-hidden="true"></i>
+    </div>
+
+    <div class="detail-block">
+      <div class="eyebrow">Cómo funciona</div>
+      <ol class="how-list">
+        <li>Funciona como un Google Maps del campus: tocas en el mapa (o buscas por nombre o categoría) dónde estás, por ejemplo la plaza o la cafetería, y luego a dónde quieres llegar.</li>
+        <li>La ruta más corta se calcula con el algoritmo A* sobre un mapa diseñado a mano y calibrado con coordenadas reales.</li>
+        <li>Los eventos aparecen ubicados en el mapa, con su lugar y hora de inicio, y puedes guardarlos.</li>
+        <li>Patroclo, un asistente con preguntas predeterminadas, te dice cómo llegar, dónde comer o qué eventos hay hoy.</li>
+        <li>Panel de administración para gestionar lugares, información por piso y eventos.</li>
+      </ol>
+    </div>
+
+    <!-- Galería de imágenes verticales (.is-portrait: cuadros 4:5 en fila de 4) -->
+    <div class="clip-gallery is-portrait">
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 1 de UMNG Path">
+          <span class="clip-ph">[UMNG-Path_promo_1.webp]</span>
+          <img src="images/umgphat/UMNG-Path_promo_1.webp" alt="UMNG Path — Encuentra tu ruta en el campus" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 2 de UMNG Path">
+          <span class="clip-ph">[UMNG-Path_promo_2.webp]</span>
+          <img src="images/umgphat/UMNG-Path_promo_2.webp" alt="UMNG Path — Busca lo que necesitas" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 3 de UMNG Path">
+          <span class="clip-ph">[UMNG-Path_promo_3.webp]</span>
+          <img src="images/umgphat/UMNG-Path_promo_3.webp" alt="UMNG Path — No te pierdas ningún evento" loading="lazy">
+        </button>
+      </figure>
+      <figure class="clip">
+        <button class="process-slot clip-slot" type="button" aria-label="Ampliar imagen 4 de UMNG Path">
+          <span class="clip-ph">[UMNG-Path_promo_4.webp]</span>
+          <img src="images/umgphat/UMNG-Path_promo_4.webp" alt="UMNG Path — Pregúntale a Patroclo" loading="lazy">
+        </button>
+      </figure>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,62 @@
+<!-- =========================================================================
+     SECCIÓN: SOBRE MÍ (01)
+     Presentación personal. Estructura:
+     - .section-banner: título grande con el efecto "linterna" (el mouse
+       revela color dentro de las letras). Ver style.css sección 5 y
+       script.js sección 6.
+     - .mission: la frase grande de "misión personal".
+     - .about-grid: dos columnas — bio a la izquierda, chips de
+       herramientas a la derecha (colapsa a una columna en móvil).
+========================================================================= -->
+<section class="scene" id="sobre-mi" data-name="01_SOBRE_MI">
+  <div class="eyebrow">Quién soy</div>
+
+  <!-- BANNER INTERACTIVO: dos copias del mismo texto superpuestas.
+       banner-outline = solo contorno (siempre visible).
+       banner-fill = versión de color, pero enmascarada: solo se ve
+       dentro del círculo que sigue al mouse. -->
+  <div class="section-banner" data-img="images/sobre-mi.webp">
+    <span class="banner-outline" aria-hidden="true">Sobre mí</span>
+    <span class="banner-fill" aria-hidden="true">Sobre mí</span>
+    <span class="banner-image" aria-hidden="true">Sobre mí</span>
+  </div>
+
+  <p class="mission">Construyo espacios que se sienten reales, aunque vivan dentro de una pantalla.</p>
+
+  <div class="about-grid">
+    <div>
+      <div class="about-meta">Edward Andrés García Monterrey — Colombia</div>
+      <p>Soy ingeniero en multimedia y mi fuerte es hacer realidad las ideas. Cuando un equipo o un diseñador llega con un concepto, lo estructuro, pienso cómo debe funcionar, armo el plan y lo construyo, combinando código, datos, hardware y lo visual.</p>
+      <p style="margin-top:14px;">He desarrollado aplicaciones web y móviles de punta a punta, sistemas con inteligencia artificial que reaccionan al sonido en tiempo real, interfaces físicas con microcontroladores y espacios virtuales donde el contenido, el recorrido y el audio cuentan una historia. Me mueve especialmente el mundo de los eventos en vivo: concebir shows y experiencias, resolver cómo se integran el audio, la luz y el video, y hacer que todo funcione frente al público.</p>
+      <p style="margin-top:14px;">Cuando algo no está claro, pregunto y lo aterrizo. Prefiero un buen plan antes que improvisar, y que el resultado sea claro para quien lo vive.</p>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:10px;">Herramientas</div>
+      <div class="chips">
+        <!-- Programación y datos -->
+        <span class="chip">Python</span>
+        <span class="chip">Java</span>
+        <span class="chip">C++</span>
+        <span class="chip">JavaScript</span>
+        <span class="chip">HTML / CSS</span>
+        <span class="chip">React</span>
+        <span class="chip">Firebase</span>
+        <span class="chip">Bases de datos</span>
+        <span class="chip">Power BI</span>
+        <!-- Hardware -->
+        <span class="chip">ESP32</span>
+        <!-- 3D, motores y diseño -->
+        <span class="chip">Maya</span>
+        <span class="chip">Unity</span>
+        <span class="chip">Krita</span>
+        <span class="chip">Suite de Adobe</span>
+        <span class="chip">Canva</span>
+        <span class="chip">Figma</span>
+        <!-- Audio y video -->
+        <span class="chip">Reaper</span>
+        <span class="chip">DaVinci Resolve</span>
+        <span class="chip">CapCut</span>
+      </div>
+    </div>
+  </div>
+</section>

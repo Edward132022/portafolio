@@ -1,0 +1,38 @@
+<!-- =========================================================================
+     SECCIÓN: INICIO (00)
+     Es la primera escena que ve el usuario. Contiene:
+     - El nombre en letras gigantes que rotan en 3D al cargar la página
+       (la animación la hace script.js, función splitLetters, sobre el
+       elemento marcado con data-split).
+     - Una franja de color decorativa y la leyenda de colores de "canal"
+       (una etiqueta por sección de proyectos; cada una lleva data-section
+       para que script.js la oculte si esa sección está oculta).
+     - Dos botones que llevan a otras escenas usando data-goto (lee este
+       atributo la función goTo() en script.js).
+     Esta escena empieza con la clase "active" porque es la que se ve
+     primero al abrir el sitio.
+========================================================================= -->
+<section class="scene active" id="inicio" data-name="00_INICIO">
+  <div class="eyebrow">Portafolio — Ingeniería Multimedia</div>
+
+  <!-- data-split: script.js reemplaza este texto por un <span> por letra -->
+  <h1 class="hero-name" data-split>Edward García</h1>
+
+  <div class="hero-spectrum" aria-hidden="true"></div>
+
+  <p class="hero-sub">Tomo una idea y la vuelvo real: la estructuro, la planeo y la construyo con código, hardware y diseño.</p>
+
+  <div class="hero-cta">
+    <!-- data-goto="experiencias-interactivas" -> al hacer clic, goTo() muestra esa escena -->
+    <button class="btn primary" data-goto="experiencias-interactivas">Ver proyectos</button>
+    <button class="btn" data-goto="sobre-mi">Sobre mí</button>
+  </div>
+
+  <!-- Leyenda de colores, solo decorativa (aria-hidden) -->
+  <div class="hero-channels" aria-hidden="true">
+    <span class="channel-tag" data-section="experiencias-interactivas"><i style="background:var(--blue)"></i>Experiencias interactivas</span>
+    <span class="channel-tag" data-section="apps-web"><i style="background:var(--green)"></i>Apps y web</span>
+    <span class="channel-tag" data-section="hardware"><i style="background:var(--amber)"></i>Hardware</span>
+    <span class="channel-tag" data-section="visual-3d"><i style="background:var(--red)"></i>3D y visual</span>
+  </div>
+</section>
